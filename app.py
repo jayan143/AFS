@@ -206,7 +206,9 @@ def format_bytes(size):
 
 # --- ROUTES ---
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/')
+def home():
+    return "The App is Running!"
 def login():
     if request.method == 'POST':
         username = request.form.get('username')
