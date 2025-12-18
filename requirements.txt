@@ -3,3 +3,4 @@ itsdangerous
 routeros_api
 waitress
 Flask-HTTPAuth
+gunicorn
