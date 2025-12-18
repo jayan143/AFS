@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %}Connect{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-[80vh]">
+    <div class="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+        
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl p-8 relative overflow-hidden transition-colors">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
+            
+            <div class="mb-8 text-center">
+                <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">Login to Router</h2>
+                <p class="text-gray-500 dark:text-gray-400">Enter your MikroTik credentials</p>
+            </div>
+
+            <form action="{{ url_for('connection') }}" method="POST" class="space-y-5">
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="col-span-2">
+                        <label class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">IP Address</label>
+                        <input type="text" name="ip" value="{{ config.ip or '' }}" placeholder="192.168.88.1" 
+                               class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Port</label>
+                        <input type="number" name="port" value="{{ config.port or '8728' }}" 
+                               class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Username</label>
+                    <input type="text" name="username" value="{{ config.username or '' }}" placeholder="admin" required
+                           class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-500 transition">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Password</label>
+                    <input type="password" name="password" value="{{ config.password or '' }}" placeholder="••••••"
+                           class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-500 transition">
+                </div>
+
+                <div x-data="{ advanced: false }">
+                    <button type="button" @click="advanced = !advanced" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 flex items-center mb-3">
+                        <span x-text="advanced ? 'Hide Options' : 'Show Advanced Options'"></span>
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    
+                    <div x-show="advanced" class="space-y-4 mb-4" x-cloak>
+                        <div>
+                            <label class="block text-sm text-gray-600 dark:text-gray-400">Router Name (Optional)</label>
+                            <input type="text" name="router_name" value="{{ config.name or '' }}" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-sm text-gray-900 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 dark:text-gray-400">Tag/Location</label>
+                            <input type="text" name="tag" value="{{ config.tag or '' }}" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-sm text-gray-900 dark:text-white">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center text-gray-600 dark:text-gray-300 cursor-pointer">
+                        <input type="checkbox" name="auto_identity" checked class="rounded bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-0 mr-2">
+                        Auto-Identity
+                    </label>
+                    <label class="flex items-center text-gray-600 dark:text-gray-300 cursor-pointer">
+                        <input type="checkbox" name="save_all" class="rounded bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-0 mr-2">
+                        Save Profile
+                    </label>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 rounded-lg shadow-lg transform transition hover:-translate-y-0.5">
+                    Connect Now
+                </button>
+            </form>
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white">Saved Devices</h3>
+                    <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-xs rounded text-gray-600 dark:text-gray-300">{{ saved_routers|length }} Found</span>
+                </div>
+
+                {% if saved_routers %}
+                <div class="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                    {% for r in saved_routers %}
+                    <div class="group flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500/50 transition-all">
+                        <a href="{{ url_for('connect_saved', index=loop.index0) }}" class="flex-1 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">{{ r.name or 'Unnamed' }}</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">{{ r.ip }}</div>
+                            </div>
+                        </a>
+                        <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href="{{ url_for('saved_edit', index=loop.index0) }}" class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            </a>
+                            <form action="{{ url_for('saved_delete', index=loop.index0) }}" method="POST" onsubmit="return confirm('Delete?');">
+                                <button type="submit" class="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/20 rounded">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-8 text-gray-500 dark:text-gray-500">
+                    No saved devices. Connect to one to save it here.
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4">
+                <div class="flex gap-4">
+                    <a href="{{ url_for('export_routers') }}" class="flex-1 py-2 text-center text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition">
+                        Backup JSON
+                    </a>
+                    <form action="{{ url_for('import_routers') }}" method="POST" enctype="multipart/form-data" class="flex-[2] flex gap-2">
+                        <input type="file" name="file" class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-2 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-100 dark:file:bg-gray-700 file:text-gray-700 dark:file:text-white hover:file:bg-gray-200 dark:hover:file:bg-gray-600 cursor-pointer" accept=".json" required>
+                        <button type="submit" class="p-2 bg-yellow-500 hover:bg-yellow-400 text-white rounded-lg transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
