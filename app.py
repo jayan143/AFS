@@ -21,8 +21,8 @@ app.secret_key = os.environ.get("FLASK_SECRET", "change_this_secret_please")
 
 # CHANGE: Extended session lifetime to 90 days
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=90)
-
-CONFIG_FILE = "web_router_config.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CONFIG_FILE = os.path.join(BASE_DIR, "..", "web_router_config.json")
 TOKEN_MAX_AGE = int(os.environ.get("TOKEN_MAX_AGE", "900"))
 _serializer = URLSafeTimedSerializer(app.secret_key)
 
