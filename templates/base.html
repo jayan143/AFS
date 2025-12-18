@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title|default('MikroTik Manager') }}</title>
+    
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gray: {
+                            900: '#111827',
+                            800: '#1f2937',
+                            700: '#374151',
+                            50: '#f9fafb',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        [x-cloak] { display: none !important; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #4b5563; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans antialiased transition-colors duration-300" 
+      x-data="{ sidebarOpen: false, dark: localStorage.getItem('theme') === 'dark' }"
+      x-init="$watch('dark', val => localStorage.setItem('theme', val ? 'dark' : 'light')); if(dark) document.documentElement.classList.add('dark'); else document.documentElement.classList.remove('dark');">
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <div x-show="sidebarOpen" @click="sidebarOpen = false" x-transition.opacity class="fixed inset-0 bg-gray-900 bg-opacity-50 z-20 lg:hidden" x-cloak></div>
+
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-transform duration-300 transform lg:static lg:translate-x-0 flex flex-col shadow-lg lg:shadow-none">
+            
+            <div class="flex items-center justify-center h-16 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                <div class="flex items-center gap-3">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="w-8 h-8 object-contain">
+                    <div class="font-bold text-xl tracking-wide text-gray-800 dark:text-white">
+                        MikroTik<span class="text-blue-600 dark:text-blue-400">Mgr</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+                {% if token %}
+                    <a href="{{ url_for('actions', token=token) }}" class="flex items-center px-4 py-3 rounded-lg transition-colors group {{ 'bg-blue-50 dark:bg-gray-700 text-blue-600 dark:text-white' if request.endpoint == 'actions' else 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white' }}">
+                        <svg class="w-5 h-5 mr-3 {{ 'text-blue-600 dark:text-blue-400' if request.endpoint == 'actions' else 'text-gray-400 group-hover:text-blue-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                        Dashboard
+                    </a>
+                    <a href="{{ url_for('reporting', token=token) }}" class="flex items-center px-4 py-3 rounded-lg transition-colors group {{ 'bg-blue-50 dark:bg-gray-700 text-blue-600 dark:text-white' if request.endpoint == 'reporting' else 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white' }}">
+                        <svg class="w-5 h-5 mr-3 {{ 'text-green-600 dark:text-green-400' if request.endpoint == 'reporting' else 'text-gray-400 group-hover:text-green-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        Users & Reporting
+                    </a>
+                    <a href="{{ url_for('mac_replace', token=token) }}" class="flex items-center px-4 py-3 rounded-lg transition-colors group {{ 'bg-blue-50 dark:bg-gray-700 text-blue-600 dark:text-white' if request.endpoint == 'mac_replace' else 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white' }}">
+                        <svg class="w-5 h-5 mr-3 {{ 'text-yellow-600 dark:text-yellow-400' if request.endpoint == 'mac_replace' else 'text-gray-400 group-hover:text-yellow-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                        Hotspot / MAC
+                    </a>
+                    <a href="{{ url_for('logs', token=token) }}" class="flex items-center px-4 py-3 rounded-lg transition-colors group {{ 'bg-blue-50 dark:bg-gray-700 text-blue-600 dark:text-white' if request.endpoint == 'logs' else 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white' }}">
+                        <svg class="w-5 h-5 mr-3 {{ 'text-red-600 dark:text-red-400' if request.endpoint == 'logs' else 'text-gray-400 group-hover:text-red-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        System Logs
+                    </a>
+                    <a href="{{ url_for('manage', token=token) }}" class="flex items-center px-4 py-3 rounded-lg transition-colors group {{ 'bg-blue-50 dark:bg-gray-700 text-blue-600 dark:text-white' if request.endpoint == 'manage' else 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white' }}">
+                        <svg class="w-5 h-5 mr-3 {{ 'text-purple-600 dark:text-purple-400' if request.endpoint == 'manage' else 'text-gray-400 group-hover:text-purple-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        Settings
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('connection') }}" class="flex items-center px-4 py-3 rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+                        Connect
+                    </a>
+                {% endif %}
+            </nav>
+
+            <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+                 <a href="{{ url_for('logout', clear_default=1) }}" class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-gray-700 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+        <div class="flex-1 flex flex-col overflow-hidden relative">
+            
+            <header class="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4 lg:px-6 z-10 shadow-sm transition-colors duration-300">
+                
+                <div class="flex items-center gap-3 overflow-hidden">
+                    <div class="lg:hidden shrink-0">
+                        <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white focus:outline-none">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                        </button>
+                    </div>
+
+                    <div class="shrink-0 lg:hidden">
+                        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="h-8 w-8 object-contain">
+                    </div>
+
+                    <h2 class="text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-100 truncate">
+                        {{ page_title }}
+                    </h2>
+                    
+                    {% if router_name %}
+                    <span class="px-2 py-0.5 text-[10px] sm:text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-500/30 rounded-full truncate max-w-[100px] sm:max-w-xs">
+                        {{ router_name }}
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div class="flex items-center gap-3 shrink-0">
+                    <button @click="dark = !dark; document.documentElement.classList.toggle('dark')" class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none transition-colors" title="Toggle Theme">
+                        <svg x-show="!dark" class="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        <svg x-show="dark" class="w-5 h-5 sm:w-6 sm:h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    </button>
+
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center gap-2 focus:outline-none">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-sm font-bold text-white ring-2 ring-gray-200 dark:ring-gray-600">
+                                {{ user[:1].upper() if user else 'U' }}
+                            </div>
+                        </button>
+                        <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 border border-gray-200 dark:border-gray-700 z-50" x-cloak>
+                            <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+                                Signed in as <strong class="text-gray-900 dark:text-white">{{ user }}</strong>
+                            </div>
+                            <a href="{{ url_for('logout', clear_default=1) }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Sign out</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-4 lg:p-8 scroll-smooth">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <div class="mb-6 space-y-3">
+                        {% for category, message in messages %}
+                            <div class="flex items-center p-4 text-sm rounded-lg border shadow-sm 
+                            {{ 'bg-red-100 dark:bg-red-900/20 border-red-200 dark:border-red-500/30 text-red-800 dark:text-red-200' if category == 'error' else 
+                               'bg-green-100 dark:bg-green-900/20 border-green-200 dark:border-green-500/30 text-green-800 dark:text-green-200' if category == 'success' else 
+                               'bg-blue-100 dark:bg-blue-900/20 border-blue-200 dark:border-blue-500/30 text-blue-800 dark:text-blue-200' }}">
+                                <span class="mr-3 text-lg font-bold">
+                                    {{ '!' if category == 'error' else '✓' if category == 'success' else 'i' }}
+                                </span>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+</body>
+</html>
