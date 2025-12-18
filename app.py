@@ -685,7 +685,7 @@ if __name__ == '__main__':
     
     
     # చివరన app.run() బదులు ఇది ఉంచండి
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder='../templates', static_folder='../static')
 # ... మీ మిగతా కోడ్ ...
 app.secret_key = os.environ.get("FLASK_SECRET", "change_this_secret_please")
 
