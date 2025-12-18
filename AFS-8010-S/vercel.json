@@ -1,6 +1,0 @@
-{
-  "rewrites": [{ "source": "/(.*)", "destination": "api/app.py" }],
-  "functions": {
-    "api/*.py": { "runtime": "vercel-python@0.0.6" }
-  }
-}
