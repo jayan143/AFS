@@ -208,7 +208,7 @@ def format_bytes(size):
 
 @app.route('/')
 def home():
-    return "The App is Running!"
+    return "<h1>AFS App is Live!</h1><p>Try going to your specific page, like /login or /dashboard</p>"
 def login():
     if request.method == 'POST':
         username = request.form.get('username')
