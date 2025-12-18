@@ -1,6 +1,5 @@
-flask
-itsdangerous
+Flask==2.0.1
 routeros_api
-waitress
+itsdangerous
+Werkzeug==2.0.1
 Flask-HTTPAuth
-werkzeug
