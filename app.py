@@ -205,10 +205,6 @@ def format_bytes(size):
     except: return str(size)
 
 # --- ROUTES ---
-
-@app.route('/')
-def home():
-    return "<h1>AFS App is Live!</h1><p>Try going to your specific page, like /login or /dashboard</p>"
 def login():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -244,7 +240,9 @@ def login():
     
     return render_template('login.html', page_title="Login")
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])  # Add this line
+def login():
+    if request.method == 'POST':
 @login_required
 def connection():
     saved = get_saved_routers()
@@ -682,8 +680,11 @@ def refresh_token():
     new_token = generate_token(data['ip'], data['port'], data['user'], data['password'], data.get('name', ''))
     return redirect(url_for('actions', token=new_token))
 
-if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=8010)
+if __name__ == "__main__":
+    import os
+    # Render uses the PORT environment variable
+    port = int(os.environ.get("PORT", 8010)) 
+    app.run(host='0.0.0.0', port=port)
     
     
     # చివరన app.run() బదులు ఇది ఉంచండి
