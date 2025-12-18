@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Reporting{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl p-6 mb-8 transition-colors">
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            Search User Details
+        </h3>
+        
+        <form method="POST" id="searchForm" class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <input type="hidden" name="token" value="{{ token }}">
+            
+            <div class="md:col-span-3">
+                <select name="search_key" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+                    <option value="name" {% if search_key=='name' %}selected{% endif %}>Username</option>
+                    <option value="login" {% if search_key=='login' %}selected{% endif %}>Login</option>
+                    <option value="mac" {% if search_key=='mac' %}selected{% endif %}>MAC Address</option>
+                </select>
+            </div>
+            
+            <div class="md:col-span-7 relative">
+                <input type="text" name="search_value" list="history-list" value="{{ search_value }}" placeholder="Enter username or MAC..." autocomplete="off" required
+                       class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 pl-10 outline-none">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
+                <datalist id="history-list">
+                    {% for item in search_history %}
+                        <option value="{{ item }}">
+                    {% endfor %}
+                </datalist>
+            </div>
+            
+            <div class="md:col-span-2">
+                <button type="submit" id="findBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg transition shadow-lg">
+                    Find
+                </button>
+                <button type="button" id="loadingBtn" disabled class="hidden w-full bg-blue-600 opacity-75 text-white font-medium py-2.5 rounded-lg cursor-not-allowed">
+                    Finding...
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% if user_details %}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden animate-fade-in-up transition-colors">
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center">
+            <h3 class="text-white font-bold text-lg flex items-center">
+                <svg class="w-6 h-6 mr-2 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                {{ user_details.get('name') }}
+            </h3>
+            <span class="bg-white/20 text-white px-3 py-1 rounded-full text-xs font-mono border border-white/20">ID: {{ user_details.get('.id') }}</span>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for k,v in user_details.items() %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <td class="py-3 px-6 text-sm font-medium text-blue-600 dark:text-blue-400 w-1/3 bg-gray-50/50 dark:bg-transparent">{{ k }}</td>
+                        <td class="py-3 px-6 text-sm text-gray-700 dark:text-gray-200">{{ v }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    document.getElementById('searchForm').addEventListener('submit', function() {
+        document.getElementById('findBtn').classList.add('hidden');
+        document.getElementById('loadingBtn').classList.remove('hidden');
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,8 @@
+version: '3'
+services:
+  mikrotik-web:
+    build: .             #  (.)     
+    container_name: AFS-8010-S
+    ports:
+      - "8010:8010"
+    restart: always

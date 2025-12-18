@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-8">
+    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Control Panel</h1>
+    <a href="{{ url_for('actions', token=token, search_value=request.args.get('search_value')) }}" class="flex items-center px-4 py-2 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-700 transition shadow-sm">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        Refresh Data
+    </a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    
+    <div class="space-y-8 order-1">
+        
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-xl overflow-hidden">
+             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                <h3 class="font-semibold text-gray-800 dark:text-white flex items-center">
+                    <span class="w-2 h-8 bg-purple-500 rounded-full mr-3"></span>
+                    Single & Bulk Operations
+                </h3>
+            </div>
+            <div class="p-6">
+                <form method="POST">
+                    <input type="hidden" name="token" value="{{ token }}">
+                    <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-2">Usernames (One per line)</label>
+                    <textarea name="bulk_user_list" rows="3" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white text-sm mb-3 focus:ring-1 focus:ring-purple-500 outline-none"></textarea>
+                    <button type="submit" name="action" value="bulk_enable_bind" class="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-sm font-medium transition shadow-lg shadow-purple-500/20">
+                        Enable Bind for Single & Bulk
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                <h3 class="font-semibold text-gray-800 dark:text-white flex items-center">
+                    <span class="w-2 h-8 bg-yellow-500 rounded-full mr-3"></span>
+                    Quick Management
+                </h3>
+            </div>
+            <div class="p-6">
+                <form method="POST" class="space-y-4">
+                    <input type="hidden" name="token" value="{{ token }}">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">Target Username</label>
+                        <input type="text" name="action_user_entry" value="{{ search_value|default('') }}" placeholder="Enter username..." required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:ring-1 focus:ring-yellow-500 outline-none">
+                    </div>
+
+                    <div class="flex gap-2">
+                        <input type="text" name="new_pass_entry" placeholder="type & leave empty its genarate automatic" class="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white text-sm outline-none">
+                        <button type="submit" name="action" value="change_password" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 rounded-lg text-sm font-bold transition">Update</button>
+                    </div>
+
+                    <hr class="border-gray-200 dark:border-gray-700 my-4">
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button name="action" value="disable_user" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg text-sm transition">Disable</button>
+                        <button name="action" value="enable_user" class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg text-sm transition">Enable</button>
+                        <button name="action" value="remove_user" onclick="return confirm('Delete this user?');" class="px-4 py-2 bg-red-900/40 text-red-500 border border-red-900 hover:bg-red-900/60 rounded-lg text-sm transition">Remove</button>
+                        <button name="action" value="unbind_user" onclick="return confirm('Clear MAC + Sessions?');" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm transition">Unbind MAC</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="space-y-8 order-2">
+        
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-xl overflow-hidden h-fit">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 flex items-center justify-between">
+                <h3 class="font-semibold text-gray-800 dark:text-white flex items-center">
+                    <span class="w-2 h-8 bg-blue-500 rounded-full mr-3"></span>
+                    Create New User
+                </h3>
+            </div>
+            <div class="p-6">
+                <form method="POST" class="space-y-4">
+                    <input type="hidden" name="token" value="{{ token }}">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">Username</label>
+                            <input type="text" name="new_username" placeholder="user1" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">Password</label>
+                            <input type="text" name="new_user_pass" placeholder="1234" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">Profile</label>
+                            <select name="profile_combobox" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:ring-1 focus:ring-blue-500 outline-none">
+                                <option value="">Select Profile...</option>
+                                {% for p in profiles %}<option value="{{ p }}">{{ p }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">Customer</label>
+                            <select name="customer_combobox" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:ring-1 focus:ring-blue-500 outline-none">
+                                <option value="">Select Customer...</option>
+                                {% for c in customers %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">Comment / Price</label>
+                        <input type="text" name="price_entry" placeholder="e.g. Paid 500" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:ring-1 focus:ring-blue-500 outline-none">
+                    </div>
+
+                    <div class="flex items-center pt-2">
+                        <input type="checkbox" name="bind_create" id="bindCheck" class="rounded bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-blue-500 focus:ring-0">
+                        <label for="bindCheck" class="ml-2 text-sm text-gray-600 dark:text-gray-300">Bind MAC Address on First Use</label>
+                    </div>
+
+                    <button type="submit" name="action" value="create_user" class="w-full mt-4 bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 rounded-lg transition shadow-lg shadow-blue-500/20">
+                        Create User
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
