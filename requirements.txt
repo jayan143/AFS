@@ -2,4 +2,3 @@ Flask==2.0.1
 routeros_api
 itsdangerous
 Werkzeug==2.0.1
-Flask-HTTPAuth
