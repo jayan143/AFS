@@ -685,16 +685,11 @@ if __name__ == '__main__':
     
     
     # చివరన app.run() బదులు ఇది ఉంచండి
-app = Flask(__name__)
-
-# ... మీ మిగతా కోడ్ ...
-
-# Vercel కోసం ఇది అవసరం
-if __name__ == "__main__":
     app = Flask(__name__)
 # ... మీ మిగతా కోడ్ ...
 app.secret_key = os.environ.get("FLASK_SECRET", "change_this_secret_please")
 
 # Vercel కి ఇది అవసరం
-app = app
+app = appం
+if __name__ == "__main__":
     app.run()
