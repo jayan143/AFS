@@ -1,0 +1,6 @@
+flask
+itsdangerous
+routeros_api
+waitress
+Flask-HTTPAuth
+google-generativeai
