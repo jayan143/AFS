@@ -1,10 +1,15 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "api/app.py" }
-  ],
-  "functions": {
-    "api/app.py": {
-      "runtime": "python@3.9"
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/app.py",
+      "use": "@vercel/python"
     }
-  }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "api/app.py"
+    }
+  ]
 }
